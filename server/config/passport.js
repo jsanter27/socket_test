@@ -13,12 +13,16 @@ const cookieExtractor = req => {
     return token;
 }
 
+/* REQUIRED BUT USELESS SINCE WE AREN'T USING SESSIONS */
+passport.serializeUser( (user, done) => done(null, user));
+passport.deserializeUser( (user, done) => done(null, user));
+
 /* JWT STRATEGY */
 passport.use(new JWTStrategy({
     jwtFromRequest : cookieExtractor,
     secretOrKey : process.env.JWT_SECRET
 }, (payload, done) => {
-    User.findById({googleID : payload.sub}, (err, user)=>{
+    User.findOne({googleID : payload.sub}, (err, user)=>{
         if (err)
             return done(err, false);
         if (user)
@@ -35,9 +39,9 @@ passport.use(new GoogleStrategy({
     callbackURL: process.env.GOOGLE_CALLBACK_URL
   },
   function(accessToken, refreshToken, profile, done) {
-    User.findOneAndUpdate({ googleID: profile.id }, { firstName: profile.givenName, lastName: profile.familyName, videos: [] }, {upsert:true} , (err, user) => {
+    User.findOneAndUpdate({ googleID: profile.id }, { name: profile.displayName }, { upsert: true } , (err, user) => {
         if (err)
-            return done(err);
+            return done(err, false);
         if (user)
             return done(null, user);
         else 

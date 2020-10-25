@@ -14,10 +14,10 @@ const UserType = new GraphQLObjectType({
         _id: {
             type: GraphQLID
         },
-        firstName: {
+        googleID: {
             type: GraphQLString
         },
-        lastName: {
+        name: {
             type: GraphQLString
         },
         videos: {

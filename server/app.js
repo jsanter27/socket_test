@@ -4,6 +4,7 @@ const logger = require('morgan');
 const mongoose = require('mongoose');
 const cors = require('cors');
 const bluebird = require('bluebird');
+const passport = require('passport');
 const { graphqlHTTP } = require('express-graphql');
 require('dotenv').config();
 
@@ -12,7 +13,7 @@ const indexRouter = require('./routes/index');
 const authRouter = require('./routes/auth');
 
 /* CONNECT TO THE DATABASE */
-mongoose.connect(process.env.MONGO_URL, { promiseLibrary: bluebird, useNewUrlParser: true, useUnifiedTopology: true })
+mongoose.connect(process.env.MONGO_URL, { promiseLibrary: bluebird, useNewUrlParser: true, useUnifiedTopology: true, useFindAndModify: false })
   .then(() =>  console.log('Successfully connected to database...'))
   .catch((err) => console.error(err));
 
@@ -26,6 +27,7 @@ if (process.env.NODE_ENV === 'development')
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
+app.use(passport.initialize());
 app.use('*', cors());
 app.use('/graphql', cors(), graphqlHTTP({
     schema: schema,
@@ -35,7 +37,7 @@ app.use('/graphql', cors(), graphqlHTTP({
 
 
 /* SET ROUTES HERE (with index as last) */
-app.use('/google', authRouter);
+app.use('/auth', authRouter);
 app.use('/', indexRouter);
 
 

@@ -5,17 +5,14 @@ const UserSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    firstName: {
-        type: String,
-        required: false
-    },
-    lastName: {
+    name: {
         type: String,
         required: false
     },
     videos: {
         type: Array,
-        required: true
+        required: true,
+        default: []
     }
 });
 
