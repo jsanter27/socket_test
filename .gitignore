@@ -6,3 +6,7 @@ server/node_modules
 # Ignore db
 
 db
+
+# Env
+
+server/.env
