@@ -1,12 +1,12 @@
 # Ignore Node Modules
 
-client/node_modules
-server/node_modules
+/client/node_modules
+/server/node_modules
 
 # Ignore db
 
-db
+/db
 
 # Env
 
-server/.env
+/server/.env
