@@ -7,6 +7,9 @@ const bluebird = require('bluebird');
 const { graphqlHTTP } = require('express-graphql');
 require('dotenv').config();
 
+const schema = require('./graphql/Schema');
+const indexRouter = require('./routes/index');
+const authRouter = require('./routes/auth');
 
 /* CONNECT TO THE DATABASE */
 mongoose.connect(process.env.MONGO_URL, { promiseLibrary: bluebird, useNewUrlParser: true, useUnifiedTopology: true })
@@ -23,15 +26,17 @@ if (process.env.NODE_ENV === 'development')
 app.use(express.json());
 app.use(express.urlencoded({extended: false}));
 app.use(cookieParser());
+app.use('*', cors());
 app.use('/graphql', cors(), graphqlHTTP({
     schema: schema,
     rootValue: global,
-    graphiql: process.env.NODE_ENV === 'development'
+    graphiql: true
 }));
 
 
-/* SET ROUTES HERE */
+/* SET ROUTES HERE (with index as last) */
+app.use('/google', authRouter);
+app.use('/', indexRouter);
 
 
-
-app.listen(process.env.PORT, () => `Server started on port ${process.env.PORT}...`);
+app.listen(process.env.PORT, () => console.log(`Server started on port ${process.env.PORT}...`));
